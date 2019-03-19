@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewPyfaMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewPyfa" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="xsfl" property="xsfl" jdbcType="VARCHAR" />
+    <result column="ZYDM" property="zydm" jdbcType="VARCHAR" />
+    <result column="kcbh" property="kcbh" jdbcType="VARCHAR" />
+    <result column="kclx" property="kclx" jdbcType="VARCHAR" />
+    <result column="KCXS" property="kcxs" jdbcType="INTEGER" />
+    <result column="KCXF" property="kcxf" jdbcType="NUMERIC" />
+    <result column="KKSJ" property="kksj" jdbcType="VARCHAR" />
+    <result column="KKFS" property="kkfs" jdbcType="VARCHAR" />
+    <result column="KSFS" property="ksfs" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="nd" property="nd" jdbcType="VARCHAR" />
+    <result column="xwk" property="xwk" jdbcType="VARCHAR" />
+    <result column="yxsh" property="yxsh" jdbcType="VARCHAR" />
+    <result column="xy" property="xy" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="edu.shu.pojo.ViewPyfa" extends="BaseResultMap" >
+    <result column="sm" property="sm" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, xsfl, ZYDM, kcbh, kclx, KCXS, KCXF, KKSJ, KKFS, KSFS, BZ, nd, xwk, yxsh, xy
+  </sql>
+  <sql id="Blob_Column_List" >
+    sm
+  </sql>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewPyfaExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_PYFA
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewPyfaExample" resultType="java.lang.Integer" >
+    select count(distinct kcbh) from View_PYFA
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+</mapper>

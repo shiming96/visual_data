@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewTkxxMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewTkxx" >
+    <result column="bjid" property="bjid" jdbcType="INTEGER" />
+    <result column="kcbh" property="kcbh" jdbcType="VARCHAR" />
+    <result column="kcmc" property="kcmc" jdbcType="VARCHAR" />
+    <result column="termcode" property="termcode" jdbcType="INTEGER" />
+    <result column="yxsh" property="yxsh" jdbcType="VARCHAR" />
+    <result column="jsbh" property="jsbh" jdbcType="VARCHAR" />
+    <result column="tkyy" property="tkyy" jdbcType="VARCHAR" />
+    <result column="ysksj" property="ysksj" jdbcType="VARCHAR" />
+    <result column="yskdd" property="yskdd" jdbcType="VARCHAR" />
+    <result column="sksj" property="sksj" jdbcType="VARCHAR" />
+    <result column="skdd" property="skdd" jdbcType="VARCHAR" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="lx" property="lx" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    bjid, kcbh, kcmc, termcode, yxsh, jsbh, tkyy, ysksj, yskdd, sksj, skdd, bz, lx
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewTkxxExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_TKXX
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewTkxxExample" resultType="java.lang.Integer" >
+    select count(*) from View_TKXX
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="selectTermCode" resultType="java.lang.Integer">
+    SELECT DISTINCT termcode FROM View_TKXX
+    <where>
+      <if test="yxsh != null and yxsh != ''">
+        AND yxsh = #{yxsh}
+      </if>
+    </where>
+    ORDER BY termcode desc
+  </select>
+  <select id="selectYxshByTermCode" resultType="java.lang.String">
+    SELECT DISTINCT yxsh FROM View_TKXX
+    <if test="termcode != null and termcode.size() != 0">
+      WHERE termcode in
+      <foreach  item="item" collection="termcode" index="index"  open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+</mapper>

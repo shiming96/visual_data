@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewZsSslqkMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewZsSslqk" >
+    <result column="准考证号" property="准考证号" jdbcType="NVARCHAR" />
+    <result column="学号" property="学号" jdbcType="NVARCHAR" />
+    <result column="姓名" property="姓名" jdbcType="NVARCHAR" />
+    <result column="性别" property="性别" jdbcType="NVARCHAR" />
+    <result column="Is211" property="is211" jdbcType="NVARCHAR" />
+    <result column="Is985" property="is985" jdbcType="NVARCHAR" />
+    <result column="IsJYB" property="isjyb" jdbcType="NVARCHAR" />
+    <result column="本科批次" property="本科批次" jdbcType="NVARCHAR" />
+    <result column="考生来源" property="考生来源" jdbcType="NVARCHAR" />
+    <result column="大毕院校码" property="大毕院校码" jdbcType="NVARCHAR" />
+    <result column="大毕院校" property="大毕院校" jdbcType="NVARCHAR" />
+    <result column="民族" property="民族" jdbcType="NVARCHAR" />
+    <result column="政治面貌" property="政治面貌" jdbcType="NVARCHAR" />
+    <result column="录取类别" property="录取类别" jdbcType="NVARCHAR" />
+    <result column="学院名称" property="学院名称" jdbcType="NVARCHAR" />
+    <result column="专业代码" property="专业代码" jdbcType="NVARCHAR" />
+    <result column="专业名称" property="专业名称" jdbcType="NVARCHAR" />
+    <result column="入学方式" property="入学方式" jdbcType="NVARCHAR" />
+    <result column="毕业省市" property="毕业省市" jdbcType="NVARCHAR" />
+    <result column="联培单位" property="联培单位" jdbcType="NVARCHAR" />
+    <result column="年度" property="年度" jdbcType="NVARCHAR" />
+    <result column="一志愿" property="一志愿" jdbcType="NVARCHAR" />
+    <result column="生源地" property="生源地" jdbcType="NVARCHAR" />
+    <result column="学位类别" property="学位类别" jdbcType="NVARCHAR" />
+    <result column="学科门类" property="学科门类" jdbcType="NVARCHAR" />
+    <result column="一级学科码" property="一级学科码" jdbcType="CHAR" />
+    <result column="一级学科" property="一级学科" jdbcType="NVARCHAR" />
+    <result column="学习形式" property="学习形式" jdbcType="NVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    准考证号, 学号, 姓名, 性别, Is211, Is985, IsJYB, 本科批次, 考生来源, 大毕院校码, 大毕院校, 民族, 政治面貌, 录取类别, 学院名称, 
+    专业代码, 专业名称, 入学方式, 毕业省市, 联培单位, 年度, 一志愿, 生源地, 学位类别, 学科门类, 一级学科码, 一级学科, 学习形式
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewZsSslqkExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_ZS_SSLQK
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewZsSslqkExample" resultType="java.lang.Integer" >
+    select count([学号]) from View_ZS_SSLQK
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="selectSYD"  resultType="String" >
+      select DISTINCT [生源地] from View_ZS_SSLQK
+  </select>
+  <select id="selectKSLY"  resultType="String" >
+      SELECT DISTINCT [考生来源] from View_ZS_SSLQK
+  </select>
+    <select id="selectZZMM"  resultType="String" >
+    SELECT DISTINCT [政治面貌] FROM View_ZS_SSLQK
+  </select>
+  <select id="selectMZ"  resultType="String" >
+    select DISTINCT [民族] FROM View_ZS_SSLQK
+      <where>
+          <if test="xymc != null and xymc != ''">
+              and [学院名称] = #{xymc}
+          </if>
+          <if test="zymc != null and zymc != ''">
+              and [专业名称] = #{zymc}
+          </if>
+      </where>
+  </select>
+  <select id="selzymc" resultType="String" >
+    select DISTINCT [专业名称] FROM View_ZS_SSLQK
+    <where>
+        <if test="xymc != null and xymc != ''">
+            and [学院名称] = #{xymc}
+        </if>
+    </where>
+  </select>
+    <select id="selectND" resultType="String" >
+        select DISTINCT [年度] FROM View_ZS_SSLQK
+        <where>
+            <if test="xymc != null and xymc != ''">
+                and [学院名称] = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and [专业名称] = #{zymc}
+            </if>
+        </where>
+    </select>
+</mapper>

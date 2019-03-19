@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewLxsjMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewLxsj" >
+    <result column="学号" property="学号" jdbcType="NVARCHAR" />
+    <result column="姓名" property="姓名" jdbcType="NVARCHAR" />
+    <result column="学院" property="学院" jdbcType="NVARCHAR" />
+    <result column="留学类别" property="留学类别" jdbcType="NVARCHAR" />
+    <result column="项目类别" property="项目类别" jdbcType="NVARCHAR" />
+    <result column="派出时间" property="派出时间" jdbcType="NVARCHAR" />
+    <result column="出访国家" property="出访国家" jdbcType="NVARCHAR" />
+    <result column="出访学校" property="出访学校" jdbcType="NVARCHAR" />
+    <result column="出访学校中文名称" property="出访学校中文名称" jdbcType="NVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    学号, 姓名, 学院, 留学类别, 项目类别, 派出时间, 出访国家, 出访学校, 出访学校中文名称
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewLxsjExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from 留学数据
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewLxsjExample" resultType="java.lang.Integer" >
+    select count(*) from 留学数据
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="selectCglbByXyAndNd" resultType="java.lang.String">
+    SELECT DISTINCT [留学类别] FROM  [留学数据]
+    <where>
+      <if test="xy != null and xy != '' and xy != '学校'">
+        AND [学院] = #{xy}
+      </if>
+      <if test="nd != null and nd != ''">
+        AND [派出时间] = #{nd}
+      </if>
+    </where>
+  </select>
+  <select id="selectNdByXy" resultType="java.lang.String">
+  SELECT DISTINCT [派出时间] FROM [留学数据]
+    <where>
+      <if test="xy != null and xy != '' and xy != '学校'">
+        AND [学院] = #{xy}
+      </if>
+      <if test="category != null and category != ''">
+        AND [留学数据].[项目类别] = #{category}
+      </if>
+    </where>
+    ORDER BY [派出时间] DESC
+  </select>
+  <select id="selectXnzzOrGpcg" resultType="java.lang.Integer">
+
+	SELECT count(*) FROM [留学数据] , View_Xj_All
+    <where>
+      AND View_Xj_All.xh = [留学数据].[学号]
+      <if test="xy != null and xy != '' and xy != '学校'">
+        AND [学院] = #{xy}
+      </if>
+      <if test="nd != null and nd != ''">
+        AND [派出时间] = #{nd}
+      </if>
+      <if test="category != null and category != ''">
+        AND [留学数据].[项目类别] = #{category}
+      </if>
+      <if test="cc != null and cc != ''">
+        AND View_Xj_All.cc = #{cc}
+      </if>
+      <if test="xwlb != null and xwlb != ''">
+        AND View_Xj_All.xwlb = #{xwlb}
+      </if>
+    </where>
+  </select>
+  <select id="selectXyByNd" resultType="java.lang.String">
+    SELECT DISTINCT [学院] FROM [留学数据]
+    <where>
+      <if test="nd != null and nd != ''">
+        AND [派出时间] = #{nd}
+      </if>
+    </where>
+  </select>
+</mapper>

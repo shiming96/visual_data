@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="edu.shu.mapper.UserMapper" >
+<select id="selUser" resultType="edu.shu.entity.User">
+        select [工号] as num, [姓名] as name, [学院] as role from UserDB where [工号]=#{num} AND [姓名]=#{name}
+    </select>
+
+
+</mapper>

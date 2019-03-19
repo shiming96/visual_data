@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewCjMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewCj" >
+    <result column="xh" property="xh" jdbcType="VARCHAR" />
+    <result column="termcode" property="termcode" jdbcType="INTEGER" />
+    <result column="kcbh" property="kcbh" jdbcType="VARCHAR" />
+    <result column="cj" property="cj" jdbcType="NUMERIC" />
+    <result column="kcxf" property="kcxf" jdbcType="NUMERIC" />
+    <result column="cjsxm" property="cjsxm" jdbcType="VARCHAR" />
+    <result column="cjsx" property="cjsx" jdbcType="VARCHAR" />
+    <result column="kclbm" property="kclbm" jdbcType="VARCHAR" />
+    <result column="kclb" property="kclb" jdbcType="VARCHAR" />
+    <result column="kcmc" property="kcmc" jdbcType="VARCHAR" />
+    <result column="bfz" property="bfz" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    xh, termcode, kcbh, cj, kcxf, cjsxm, cjsx, kclbm, kclb, kcmc, bfz
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewCjExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_CJ
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewCjExample" resultType="java.lang.Integer" >
+    select count(*) from View_CJ
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <select id="selectCjzt" resultType="java.lang.Integer" >
+    select count(DISTINCT xh) FROM View_CJ
+    <where>
+      <choose>
+        <when test="category == '总人数'">
+          AND 1=1
+        </when>
+        <when test="category == '不及格'">
+          AND cj <![CDATA[<]]> '60'
+        </when>
+        <otherwise>
+          AND cj <![CDATA[>=]]> '60'
+        </otherwise>
+      </choose>
+      AND bfz = '1'
+      AND cjsx in ('正常', '免修', '重修')
+      AND xh IN (SELECT DISTINCT XH FROM View_PYJH)
+      AND xh IN ( SELECT DISTINCT xh FROM View_Xj
+                    <where>
+                      <if test="xymc != null and xymc != '' and xymc != '学校'">
+                        xymc = #{xymc}
+                      </if>
+                      <if test="xwlb != null and xwlb != ''">
+                        AND xwlb = #{xwlb}
+                      </if>
+                      <if test="cc != null and cc != ''">
+                        AND cc = #{cc}
+                      </if>
+                    </where>
+                  )
+    </where>
+  </select>
+
+  <select id="selectCjyj" resultType="java.lang.Integer" >
+    select count(*) from
+     (select  xh,count(*) as num FROM View_CJ
+    <where>
+      AND cj <![CDATA[<]]> '60'
+      AND bfz = '1'
+      AND cjsx in ('正常', '免修', '重修')
+      AND xh IN (SELECT DISTINCT XH FROM View_PYJH)
+      AND xh IN ( SELECT DISTINCT xh FROM View_Xj
+      <where>
+        <if test="xymc != null and xymc != '' and xymc != '学校'">
+          AND xymc = #{xymc}
+        </if>
+      </where>
+      )
+    </where>
+    GROUP BY xh
+    HAVING count(*) > 2
+    )
+    as temp
+  </select>
+  <select id="selectStuCjyjInfo" resultType="edu.shu.entity.StuCjyjInfo">
+    select  xh,count(*) as num FROM View_CJ
+    <where>
+      AND cj <![CDATA[<]]> '60'
+      AND bfz = '1'
+      AND cjsx in ('正常', '免修', '重修')
+      AND xh IN (SELECT DISTINCT XH FROM View_PYJH)
+      AND xh IN ( SELECT DISTINCT xh FROM View_Xj
+      <where>
+        <if test="xymc != null and xymc != '' and xymc != '学校'">
+          AND xymc = #{xymc}
+        </if>
+      </where>
+
+      )
+    </where>
+    GROUP BY xh
+    HAVING count(*) > 2
+  </select>
+
+  <select id="selectXfzt" resultType="java.lang.Integer">
+  SELECT count(xh) FROM
+  (SELECT
+  a.xh,a.hasxf,b.needxf
+  FROM
+  ((SELECT xh,sum( kcxf ) AS hasxf FROM View_CJ WHERE bfz = '1' AND cjsx in ('正常', '免修', '重修') GROUP BY xh) as a
+  LEFT OUTER JOIN (SELECT XH, sum( KCXF ) needxf FROM View_PYJH  GROUP BY XH) as b on a.xh = b.XH )
+  <where>
+    <choose>
+      <when test="category == '修满'">
+        AND a.hasxf <![CDATA[>=]]> b.needxf
+      </when>
+      <when test="category == '没修满'">
+        AND a.hasxf <![CDATA[<]]> b.needxf
+      </when>
+    </choose>
+  </where>
+  AND a.xh in (SELECT DISTINCT xh FROM View_Xj
+  <where>
+    <if test="xymc != null and xymc != '' and xymc != '学校'">
+      AND xymc = #{xymc}
+    </if>
+    <if test="xwlb != null and xwlb != ''">
+      AND xwlb = #{xwlb}
+    </if>
+    <if test="cc != null and cc != ''">
+      AND cc = #{cc}
+    </if>
+    <if test="nj != null and nj != ''">
+      AND nj = #{nj}
+    </if>
+  </where>)
+  )as temp
+  </select>
+  <select id="selectStuXfztInfo" resultType="edu.shu.entity.StuXfztInfo">
+    SELECT
+    a.xh as xh,a.hasxf as hasxf,b.needxf as needxf
+    FROM
+    ((SELECT xh,sum( kcxf ) AS hasxf FROM View_CJ WHERE bfz = '1' AND cjsx in ('正常', '免修', '重修') GROUP BY xh) as a
+    LEFT OUTER JOIN (SELECT XH, sum( KCXF ) needxf FROM View_PYJH  GROUP BY XH) as b on a.xh = b.XH )
+    WHERE
+    a.hasxf <![CDATA[<]]> b.needxf
+    AND a.xh in (SELECT DISTINCT xh FROM View_Xj
+    <where>
+      <if test="xymc != null and xymc != '' and xymc != '学校'">
+        AND xymc = #{xymc}
+      </if>
+      <if test="nj != null and nj != ''">
+        AND nj = #{nj}
+      </if>
+    </where>)
+  </select>
+  <select id="selectNjByXy" resultType="java.lang.String">
+    select DISTINCT nj FROM View_Xj
+    <where>
+      <if test="xymc != null and xymc != '' and xymc != '学校'">
+        AND xymc = #{xymc}
+      </if>
+    </where>
+    ORDER BY nj DESC
+  </select>
+
+
+</mapper>

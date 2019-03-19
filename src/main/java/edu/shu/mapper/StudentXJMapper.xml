@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="edu.shu.mapper.StudentXJMapper" >
+
+  <select id="selXJZT" resultType="int">
+        select count(xh) from View_Xj
+        <where>
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="xq != null and xq != ''">
+                and xq = #{xq}
+            </if>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="nj != null and nj != ''">
+                and nj = #{nj}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+  </select>
+    <select id="selXQRSFB" resultType="int">
+        select count(xh) from View_Xj
+        <where>
+                and status  NOT IN ('保留资格','毕业','未报到')
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="xq != null and xq != ''">
+                and xq = #{xq}
+            </if>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+            <if test="nj != null and nj != ''">
+                and nj = #{nj}
+            </if>
+            <if test="xb != null and xb != ''">
+                and xb = #{xb}
+            </if>
+            <if test="cc != null and cc != ''">
+                and cc = #{cc}
+            </if>
+        </where>
+    </select>
+    <select id="selLBSJ" resultType="int">
+        select count(xh) from View_Xj
+        <where>
+                and status NOT IN ('保留资格','毕业','未报到')
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="nj != null and nj != ''">
+                and nj = #{nj}
+            </if>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="xwlb != null and xwlb != ''">
+                and xwlb = #{xwlb}
+            </if>
+            <if test="cc != null and cc != ''">
+                and cc = #{cc}
+            </if>
+            <if test="xxxs != null and xxxs != ''">
+                and xxxs = #{xxxs}
+            </if>
+            <if test="XKML != null and XKML != ''">
+                and XKML = #{XKML}
+            </if>
+            <if test="xh != null and xh != ''">
+                and xh LIKE '___6%'
+            </if>
+
+        </where>
+    </select>
+    <select id="selXKML" resultType="String">
+        select DISTINCT XKML FROM View_Xj where XKML is NOT NULL
+        <if test="cc != null and cc != ''">
+            and cc = #{cc}
+        </if>
+    </select>
+    <select id="selCXZSJ" resultType="int">
+        select count(xh) from View_Xj
+        <where>
+            and status NOT IN ('保留资格','毕业','未报到')
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+            <choose>
+                <when test="cqsj == '超期一年'">
+                    and yjby BETWEEN DATEADD(yy,-1,GETDATE()) AND DATEADD(yy,0,GETDATE())
+                </when>
+                <when test="cqsj == '超期二年'">
+                    and yjby BETWEEN DATEADD(yy,-2,GETDATE()) AND DATEADD(yy,-1,GETDATE())
+                </when>
+                <when test="cqsj == '超期二年以上'">
+                    and yjby <![CDATA[<]]> DATEADD(yy,-2,GETDATE())
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> DATEADD(yy,0,GETDATE())
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <select id="selXYRS" resultType="java.util.Map">
+        SELECT xymc,count(xh) as num FROM View_Xj where status NOT IN ('保留资格','毕业','未报到') GROUP BY xymc
+    </select>
+    <select id="selCXZXX"   resultType="edu.shu.pojo.StudentXJ">
+        select xh,xm,zymc,xymc,XZ,status,xb,csrq,zzmm,mz,syd,dsxm,cc,pylb,xwlb,XKML,rxrq,zydm,xq,dsbh,xxxs,nj,CONVERT(varchar(100), yjby, 120) as yjby from View_Xj WHERE status NOT IN ('保留资格','毕业','未报到')
+        <if test="xymc != null and xymc != ''">
+            and xymc = #{xymc}
+        </if>
+        <if test="zymc != null and zymc != ''">
+            and zymc = #{zymc}
+        </if>
+        and yjby <![CDATA[<]]> DATEADD(yy,0,GETDATE())
+    </select>
+    <select id="selCXZSS" resultType="int">
+        select count(xh) as num from View_Xj
+        <where>
+            and status  NOT IN ('保留资格','毕业','未报到')
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="xq != null and xq != ''">
+                and xq = #{xq}
+            </if>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+            <if test="nj != null and nj != ''">
+                and nj = #{nj}
+            </if>
+        </where>
+    </select>
+    <resultMap id="myMap" type="java.util.Map">
+        <result column="xymc" property="college" jdbcType="NVARCHAR" />
+        <result column="nj" property="grade" jdbcType="CHAR" />
+    </resultMap>
+    <select id="selXQRSFBXQ" resultMap="myMap">
+        select DISTINCT xymc,nj from View_Xj
+        <where>
+            and status NOT IN ('保留资格','毕业','未报到')
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="xq != null and xq != ''">
+                and xq = #{xq}
+            </if>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+            <if test="nj != null and nj != ''">
+                and nj = #{nj}
+            </if>
+        </where>
+        ORDER BY xymc,nj desc
+    </select>
+
+    <select id="selzymc" resultType="String" >
+        select DISTINCT zymc FROM View_Xj
+        <where>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+        </where>
+    </select>
+    <select id="selnj" resultType="String" >
+        select DISTINCT nj FROM View_Xj
+        <where>
+            and status NOT IN ('保留资格','毕业','未报到')
+            <choose>
+                <when test="isCXZ == null">
+                    and 1=1
+                </when>
+                <when test="isCXZ == 'false'">
+                    and yjby <![CDATA[>=]]> GETDATE()
+                </when>
+                <otherwise>
+                    and yjby <![CDATA[<]]> GETDATE()
+                </otherwise>
+            </choose>
+            <if test="xymc != null and xymc != ''">
+                and xymc = #{xymc}
+            </if>
+            <if test="zymc != null and zymc != ''">
+                and zymc = #{zymc}
+            </if>
+        </where>
+
+    </select>
+  <select id="selNumByNj" resultType="java.lang.Integer">
+    SELECT count(xh) FROM View_Xj
+    <where>
+      and yjby <![CDATA[<]]> GETDATE()
+      <if test="xymc != null and xymc != '' and xymc != '学校'">
+        and xymc = #{xymc}
+      </if>
+      <if test="zymc != null and zymc != '' and zymc != '所有专业'">
+        and zymc = #{zymc}
+      </if>
+      <if test="nj != null and nj != ''">
+        and nj = #{nj}
+      </if>
+      <if test="cc != null and cc != ''">
+        and cc = #{cc}
+      </if>
+      <if test="xwlb != null and xwlb != ''">
+        and xwlb = #{xwlb}
+      </if>
+      <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+        and yjby BETWEEN #{startTime} AND #{endTime}
+      </if>
+    </where>
+  </select>
+
+
+</mapper>

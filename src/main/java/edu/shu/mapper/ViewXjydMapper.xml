@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewXjydMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewXjyd" >
+    <result column="ID" property="id" jdbcType="BIGINT" />
+    <result column="学号" property="学号" jdbcType="CHAR" />
+    <result column="学籍异动码" property="学籍异动码" jdbcType="CHAR" />
+    <result column="学籍异动日" property="学籍异动日" jdbcType="CHAR" />
+    <result column="备注" property="备注" jdbcType="NVARCHAR" />
+    <result column="操作人" property="操作人" jdbcType="NVARCHAR" />
+    <result column="操作时间" property="操作时间" jdbcType="TIMESTAMP" />
+    <result column="休学终止日" property="休学终止日" jdbcType="VARCHAR" />
+    <result column="休学起始日" property="休学起始日" jdbcType="VARCHAR" />
+    <result column="已复学" property="已复学" jdbcType="CHAR" />
+    <result column="学籍异动" property="学籍异动" jdbcType="NVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, 学号, 学籍异动码, 学籍异动日, 备注, 操作人, 操作时间, 休学终止日, 休学起始日, 已复学, 学籍异动
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewXjydExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_XJYD
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewXjydExample" resultType="java.lang.Integer" >
+    select count(*) from View_XJYD
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="selNumByXyAndcate" resultType="java.lang.Integer">
+  SELECT count(temp.xh) FROM
+    (SELECT DISTINCT View_XJYD.[学号] as xh,  View_XJYD.[学籍异动] as xjyd FROM View_XJYD, View_Xj_All
+      WHERE View_XJYD.[学号] = View_Xj_All.xh
+      <if test="xymc != null and xymc != '' and xymc != '学校'">
+        AND View_Xj_All.xymc = #{xymc}
+      </if>
+      <if test="cate != null and cate != ''">
+        AND View_XJYD.[学籍异动] = #{cate}
+      </if>
+      <if test="nd != null and nd != ''">
+        AND View_XJYD.[学籍异动日] LIKE #{nd}+'%'
+      </if>
+      ) as temp
+  </select>
+  <select id="selNumByXyAndSomeCate" resultType="java.lang.Integer">
+    SELECT count(temp.xh) FROM
+    (SELECT DISTINCT View_XJYD.[学号] as xh,  View_XJYD.[学籍异动] as xjyd FROM View_XJYD, View_Xj_All
+    WHERE View_XJYD.[学号] = View_Xj_All.xh
+    <if test="xymc != null and xymc != '' and xymc != '学校'">
+      AND View_Xj_All.xymc = #{xymc}
+    </if>
+    <if test="cate != null and cate.size() != 0">
+      And View_XJYD.[学籍异动] not in
+      <foreach collection="cate" item="item" index="index" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="nd != null and nd != ''">
+      AND View_XJYD.[学籍异动日] LIKE #{nd}+'%'
+    </if>
+    ) as temp
+  </select>
+</mapper>

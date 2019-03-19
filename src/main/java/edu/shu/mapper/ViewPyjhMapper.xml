@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.shu.mapper.ViewPyjhMapper" >
+  <resultMap id="BaseResultMap" type="edu.shu.pojo.ViewPyjh" >
+    <result column="xy" property="xy" jdbcType="VARCHAR" />
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="XH" property="xh" jdbcType="VARCHAR" />
+    <result column="KCBH" property="kcbh" jdbcType="VARCHAR" />
+    <result column="XKLX" property="xklx" jdbcType="VARCHAR" />
+    <result column="KCXF" property="kcxf" jdbcType="NUMERIC" />
+    <result column="XXXQ" property="xxxq" jdbcType="INTEGER" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="kclx" property="kclx" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    xy, id, XH, KCBH, XKLX, KCXF, XXXQ, BZ, kclx
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="edu.shu.pojo.ViewPyjhExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from View_PYJH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="edu.shu.pojo.ViewPyjhExample" resultType="java.lang.Integer" >
+    select count(*) from View_PYJH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <select id="selKyxxkslAll" resultType="int" >
+    SELECT  count(DISTINCT(View_PYJH.KCBH)) FROM View_PYJH, View_KC
+    <where>
+      View_PYJH.KCBH = View_KC.KCBH
+      AND View_PYJH.xy != View_KC.xy AND View_KC.xy != '公共学院' AND XH NOT LIKE '___6%'
+      <if test="yAxis != null and yAxis.size() != 0">
+        and View_PYJH.xy in
+        <foreach  item="item" collection="yAxis" index="index"  open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="kclb != null and kclb != ''">
+        and kclx = #{kclb}
+      </if>
+      <if test="nj != null and nj != ''">
+        and XH LIKE #{nj} + '%'
+      </if>
+    </where>
+  </select>
+
+  <select id="selKyxxksl" resultType="int" >
+    SELECT count(DISTINCT(View_PYJH.KCBH)) FROM View_PYJH, View_KC
+    <where>
+      View_PYJH.KCBH = View_KC.KCBH
+      AND View_PYJH.xy != View_KC.xy AND View_KC.xy != '公共学院' AND XH NOT LIKE '___6%'
+      <if test="xy != null and xy != '' and xy != '学校'">
+        and View_PYJH.xy = #{xy}
+      </if>
+      <if test="kclb != null and kclb != ''">
+        and kclx = #{kclb}
+      </if>
+      <if test="nj != null and nj != ''">
+        and XH LIKE #{nj} + '%'
+      </if>
+    </where>
+  </select>
+
+
+  <select id="selKyxxkrsAll" resultType="int" >
+    SELECT  count(DISTINCT XH) FROM View_PYJH, View_KC
+    <where>
+      View_PYJH.KCBH = View_KC.KCBH
+      AND View_PYJH.xy != View_KC.xy AND View_KC.xy != '公共学院' AND XH NOT LIKE '___6%'
+      <if test="yAxis != null and yAxis.size() != 0">
+        and View_PYJH.xy in
+        <foreach  item="item" collection="yAxis" index="index"  open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="kclb != null and kclb.size() != 0">
+        and kclx in
+        <foreach  item="item" collection="kclb" index="index"  open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="nj != null and nj != ''">
+        and XH LIKE #{nj} + '%'
+      </if>
+    </where>
+  </select>
+
+  <select id="selKyxxkrs" resultType="int" >
+    SELECT  count(DISTINCT XH) FROM View_PYJH, View_KC
+    <where>
+      View_PYJH.KCBH = View_KC.KCBH
+      AND View_PYJH.xy != View_KC.xy AND View_KC.xy != '公共学院' AND XH NOT LIKE '___6%'
+      <if test="xy != null and xy != '' and xy != '学校'">
+        and View_PYJH.xy = #{xy}
+      </if>
+      <if test="kclb != null and kclb.size() != 0">
+        and kclx in
+        <foreach  item="item" collection="kclb" index="index"  open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="nj != null and nj != ''">
+        and XH LIKE #{nj} + '%'
+      </if>
+    </where>
+  </select>
+
+
+  <select id="selDmByNj" resultType="java.lang.String">
+    SELECT DISTINCT kclx FROM View_PYJH
+     <where>
+       <if test="xy != null and xy != '' and xy != '学校'">
+         and xy = #{xy}
+       </if>
+       <if test="nj != null and nj != ''">
+         and XH like #{nj} + '%'
+       </if>
+     </where>
+    ORDER BY kclx desc
+  </select>
+
+</mapper>
